@@ -5,4 +5,6 @@ To add these libraries to your own arduino install:
 
 2. Copy paste the library folders into the folder you just made.
 
+Sketchbook/libraries/serveral library folders
+
 3. Restart arduino and try out some of the exmple code by selecting File>Examples>Library>file
