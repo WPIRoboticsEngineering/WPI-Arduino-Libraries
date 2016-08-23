@@ -23,7 +23,7 @@ void DFW::update(void)
 {
 //Serial.println("updateing");
 //joystick packet
-  if (Serial1.find("A")) {
+  if (Serial1.find('A')) {
      // Serial.println("A");
 	  for (int i = 0; i < 6; i++)
       {
@@ -48,8 +48,8 @@ void DFW::update(void)
  // }
 
 // Button Packet
-  if (Serial1.find("B")) {
-        for (int i = 0; i < 4; i++)
+  if (Serial1.find('B')) {
+        for (int i = 0; i < 3; i++)
       {
         inByteB[i] = Serial1.read();
       }
@@ -57,7 +57,7 @@ void DFW::update(void)
 	digitalWrite(debuginpin,0);
       lastTime = millis();
       //   Serial.println("B Lock");
-      for (int i = 0; i < 4; i++)  {
+      for (int i = 0; i < 3; i++)  {
         byteBu[i] = inByteB[i];
       }
     }
@@ -68,7 +68,7 @@ void DFW::update(void)
   char clearing =Serial1.read();
   }
   
-  //Heartbeat need to read once every 2 seconds
+  //Heartbeat need to read once every 1 seconds
   hbTime =  millis() - lastTime;
   if (hbTime > 1000)
   {
@@ -78,7 +78,7 @@ void DFW::update(void)
     for (int i = 0; i < 2; i++)  {
       byteBu[i] = 127;
     }
-    for (int i = 0; i < 4; i++)  {
+    for (int i = 0; i < 3; i++)  {
       byteAn[i] = 90;
     }
   }
