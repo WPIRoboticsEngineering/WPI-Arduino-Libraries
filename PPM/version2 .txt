@@ -1,1 +1,0 @@
-Has 4 Second watchdog reset function built in. 
