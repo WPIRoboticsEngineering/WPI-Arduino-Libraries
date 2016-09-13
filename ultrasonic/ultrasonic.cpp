@@ -1,55 +1,55 @@
-// Ultrasonic - Library for HR-SC04 Ultrasonic Ranging Module.
-// GitHub: https://github.com/JRodrigoTech/Ultrasonic-HC-SR04
-// #### LICENSE ####
-// This code is licensed under Creative Commons Share alike 
-// and Attribution by J.Rodrigo ( http://www.jrodrigo.net ).
+/*
+  ultrasonic.cpp - Library for finding the distance to an object in inches.
+  Takes 4 samples and averages them together for a better reading.
+ */
 
-#if ARDUINO >= 100
-  #include "Arduino.h"
-#else
-  #include "WProgram.h"
-#endif
+#include "Arduino.h"
+#include "ultrasonic.h"
 
-#include "Ultrasonic.h"
 
-Ultrasonic::Ultrasonic(int TP, int EP)
-{
-   pinMode(TP,OUTPUT);
-   pinMode(EP,INPUT);
-   Trig_pin=TP;
-   Echo_pin=EP;
-   Time_out=3000;  // 3000 µs = 50cm // 30000 µs = 5 m 
+ultrasonic::ultrasonic(int pingPin, int echoPin) {
+  pinMode(pingPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  _pingPin = pingPin;
+  _echoPin = echoPin;
 }
 
-Ultrasonic::Ultrasonic(int TP, int EP, long TO)
-{
-   pinMode(TP,OUTPUT);
-   pinMode(EP,INPUT);
-   Trig_pin=TP;
-   Echo_pin=EP;
-   Time_out=TO;
+float ultrasonic::calc() {
+//pulse
+  //make sure pin is low
+  digitalWrite(_pingPin, LOW);
+  //pull high to start the pulse
+  digitalWrite(_pingPin, HIGH);
+  //250us pulse according to VEX datasheets
+  delayMicroseconds(250);
+  //pull back low
+  digitalWrite(_pingPin, LOW);
+
+  //measure the length of the high pulse
+  //goes low when the ping returns
+  long pulses = pulseIn(_echoPin, HIGH);
+
+  //speed_of_sound/2 * time * 12in/ft
+  float dist = ( (567.5 * ( (float)pulses/1000000)) * 12.0);
+
+  return dist;
+
 }
 
-long Ultrasonic::Timing()
-{
-  digitalWrite(Trig_pin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(Trig_pin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(Trig_pin, LOW);
-  duration = pulseIn(Echo_pin,HIGH,Time_out);
-  if ( duration == 0 ) {
-	duration = Time_out; }
-  return duration;
+float ultrasonic::distance() {
+  float avgDist = 0;
+  
+  //take 5 samples
+  for(int i = 0; i < 5; i++) {
+	avgDist += calc();
+	//wait 10ms -> otherwist pulseIn times out
+	delay(20);
+  }
+  //divide by 5
+  avgDist /= 5;
+  
+  return avgDist;
 }
 
-long Ultrasonic::Ranging(int sys)
-{
-  Timing();
-  if (sys) {
-	distance_cm = duration /29 / 2 ;
-	return distance_cm;
-  } else {
-	distance_inc = duration / 74 / 2;
-	return distance_inc; }
-}
+

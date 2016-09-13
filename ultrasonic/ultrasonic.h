@@ -1,34 +1,21 @@
-// Ultrasonic - Library for HR-SC04 Ultrasonic Ranging Module.
-// GitHub: https://github.com/JRodrigoTech/Ultrasonic-HC-SR04
-// #### LICENSE ####
-// This code is licensed under Creative Commons Share alike 
-// and Attribution by J.Rodrigo ( http://www.jrodrigo.net ).
+/*
+  ultrasonic.h - Library for finding the distance to an object in inches.
+*/
 
-#ifndef Ultrasonic_h
-#define Ultrasonic_h
+#ifndef ultrasonic_h
+#define ultrasonic_h
 
-#if ARDUINO >= 100
-  #include "Arduino.h"
-#else
-  #include "WProgram.h"
-#endif
+#include "Arduino.h"
 
-#define CM 1
-#define INC 0
-
-class Ultrasonic
-{
-  public:
-    Ultrasonic(int TP, int EP);
-	Ultrasonic(int TP, int EP, long TO);
-    long Timing();
-    long Ranging(int sys);
-
-  private:
-    int Trig_pin;
-    int Echo_pin;
-	long Time_out;
-    long duration,distance_cm,distance_inc;
+class ultrasonic {
+public:
+  ultrasonic(int pingPin, int echoPin);
+  float distance();
+private:
+  int _pingPin;
+  int _echoPin;
+  float calc();
 };
 
 #endif
+
